@@ -17,3 +17,7 @@
 *.bak
 *.new
 *.org
+
+# palacios
+*.cmd
+

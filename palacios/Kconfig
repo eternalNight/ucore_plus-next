@@ -1,0 +1,444 @@
+mainmenu "Palacios VMM Configuration"
+
+menu "Target Configuration"
+
+
+choice
+	prompt "Target Host OS"
+	default KITTEN
+
+config KITTEN
+	bool "Kitten OS"
+	select BUILT_IN_STDLIB
+	select BUILT_IN_STRCASECMP
+	select BUILT_IN_ATOI
+	select ALIGNED_PG_ALLOC
+	help
+	  This enables the necesary options to compile Palacios with Kitten
+
+config LINUX_BUILTIN
+	bool "OLD Linux (Built in) -- to be deprecated"
+	select BUILT_IN_STDLIB
+	select BUILT_IN_ATOI
+	select FILE
+	help
+	  This enables the necessary options to compile Palacios with Linux 2.6
+          Currently, this is in development, and only 2.6.32 is verified to work
+
+
+config LINUX
+	bool "Linux Module"
+	select BUILT_IN_STDLIB
+	select BUILT_IN_STRDUP
+	select BUILT_IN_ATOI
+	select FILE
+	select V3_DECODER
+	help
+	  This enables the necessary options to compile Palacios as a Linux module
+ 
+
+config LINUX_KERN
+	depends on LINUX
+	string "Linux Kernel Source directory" 
+	default "/usr/src/linux"
+	help 
+	  This is the directory containing the linux source for the kernel module to be built
+
+config MINIX
+	bool "MINIX 3"
+	help
+	  This enables the necesary options to compile Palacios with Kitten
+
+config OTHER_OS
+	bool "Other OS"
+	help 
+	  Choose this to compile Palacios for a Generic Host OS
+          (Formerly GeekOS)
+
+endchoice
+
+config CRAY_XT
+        bool "Red Storm (Cray XT3/XT4)"
+        help
+	  Support for Cray XT3 and XT4 systems.
+
+config SVM
+	bool "AMD SVM Support"
+	default y
+	help
+	  Compile with support for AMD SVM
+
+config VMX
+	bool "Intel VMX Support"
+	default y
+	help 
+	  Compile with support for Intel VMX
+
+
+config FRAME_POINTER
+	bool "Compile with Frame pointers"
+	default n
+	help
+	  Compiles the Palacios library with Frame pointers
+
+config DEBUG_INFO
+	bool "Compile with Debug Information"
+	default n
+	help
+	  Compiles the Palacios library with debugging symbols
+
+choice 
+	prompt "X86 decoder"
+	default XED
+
+config XED
+	bool "XED decoder library"
+	depends on !LINUX
+	help
+	   This uses the XED decoder library from pintools 
+
+config V3_DECODER
+	bool "Internal Palacios decoder"
+	help
+	    This selects the internal V3Vee x86 decoder
+
+
+endchoice
+
+menu "Supported host OS features"
+      
+
+config ALIGNED_PG_ALLOC
+	bool "Host support for aligned page allocations"
+	default n
+	help 
+	  Select this if your OS supports allocating memory pages using an alignment. This is required 
+	  if you want Palacios to run with large page table pages. 
+
+config MAX_CPUS
+	int "Maximum number of cpus"
+	range 1 255
+	default "16"
+	help 
+	  Specifies the maximum number of hardware CPUs supported by the OS
+	  For uniprocessor environments, set this to 1
+
+endmenu
+
+source "palacios/src/interfaces/Kconfig"
+source "palacios/src/extensions/Kconfig"
+
+config TELEMETRY
+	bool "Enable VMM telemetry support"
+	default n
+	help 
+	  Enable the telemetry framework in Palacios
+	  -----
+	  This is a framwork that allows components of palacios to record 
+	  information that is periodically reported to the log output.
+	  Telemetry is automatically collected for vmexits. Subsystem telemetry 
+	  is configured separately
+
+
+config SHADOW_PAGING_TELEMETRY
+	bool "Enable Shadow Paging Telemetry"
+	default y
+	depends on TELEMETRY
+	help
+	  Enable telemetry information for shadow paging 
+
+
+
+config EXPERIMENTAL
+	bool "Enable Experimental options"
+	default n
+	help 
+	  This allows the selection of experimental features. This includes incomplete or unreviewed code. 
+	  Only enable this feature if you are working on the features in question. 
+	  IMPORTANT: Non-experimental code MUST NOT use, require, or rely on experimental features. 
+	  Any code that violates this will be immediately deleted without warning. 
+	  -- 
+	  The purpose of this option is to allow features under development to be committed to the mainline
+	  to more easily track changes and provide access to multiple developers
+
+config CHECKPOINT
+	bool "Enable Checkpointing"
+	default n
+	help 
+	  Temporary option to enable experimental checkpoint code
+
+
+
+endmenu
+
+
+source "Kconfig.stdlibs"
+
+
+menu "Virtual Paging"
+
+config SHADOW_PAGING
+	bool "Enable shadow paging"
+	default y
+	help 
+	   Enables shadow paging for virtual machines
+
+
+config SHADOW_PAGING_VTLB
+	bool "Virtual TLB"
+	default y
+	depends on SHADOW_PAGING
+	help 
+	   Enables Virtual TLB implemenation for shadow paging
+
+
+config DEBUG_SHDW_PG_VTLB
+	bool "Enable VTLB debugging"
+	default n
+	depends on SHADOW_PAGING_VTLB
+	help
+	  Enables debugging messages for VTLB implementation
+
+config SHADOW_PAGING_CACHE1
+	bool "Shadow Page Cache (1)"
+	default y
+	depends on SHADOW_PAGING
+	help 
+	   Enables caching implemenation for shadow paging
+
+
+endmenu
+
+
+
+menu "Time Management"
+config TIME_DILATION
+	bool "Control Guest/Host Time Offseting"
+	default n
+	depends on EXPERIMENTAL
+	help
+	    Controls the relative speeds of the guest and host processor
+	    to allow the VM to provide the illusion of the guest seeing time
+	    pass at a different rate than the host system does.
+
+config TIME_HIDE_VM_COST
+        bool "Hide VMM Run Cost"
+	default n
+	depends on EXPERIMENTAL 
+	help
+	    Offset guest time from host time sufficiently to hide the cost of
+	    running in the virtual machine. This can aid the consistency of
+	    time between multiple timers, but can cause the guest to run 
+	    a good bit slower than the host in VM-intensive parts of the code.
+
+config TIME_VIRTUALIZE_TSC
+	bool "Fully virtualize guest TSC"
+	default n
+	depends on EXPERIMENTAL
+	help
+	    Virtualize the processor time stamp counter in the guest, 
+	    generally increasing consistency between various time sources 
+	    but also potentially making guest time run slower than real time.
+	
+endmenu
+
+
+
+menu "Symbiotic Functions"
+
+config SYMBIOTIC
+	bool "Enable Symbiotic Functionality"
+	default n
+	help 
+	  Enable Symbiotic components of the VMM. 
+	  This includes the SymSpy interface.
+
+config SYMCALL
+	bool "Symbiotic upcalls"
+	default n
+	depends on SYMBIOTIC && EXPERIMENTAL
+	help
+	  Enables the Symbiotic upcall interface
+
+config SWAPBYPASS
+	bool "SwapBypass"
+	default n
+	depends on SYMBIOTIC && SYMCALL && EXPERIMENTAL
+	help 
+	  This enables the SwapBypass architecture
+
+config SWAPBYPASS_TELEMETRY
+	bool "Enable SwapBypass Telemetry"
+	default n
+	depends on TELEMETRY && SWAPBYPASS
+	help 
+	  Enable the telemetry information for the SwapBypass subsystem
+
+menuconfig SYMMOD 
+	bool "Symbiotic Modules"
+	default n
+	depends on EXPERIMENTAL
+#	depends on SYMBIOTIC
+	help
+	  Enable Symbiotic module loading
+
+
+endmenu
+
+menu "VNET"
+
+config VNET
+        bool "Enable Vnet in Palacios"
+        default n
+        help
+          Enable the Vnet in Palacios
+
+config DEBUG_VNET
+        depends on VNET
+        bool "Enable Vnet Debug in Palacios"
+        default n
+        help
+          Enable the Vnet debug in Palacios
+
+
+endmenu
+
+menu "Debug configuration"
+
+
+## Is unwind information useful
+
+config DEBUG_ON
+	bool "Enable Debugging"
+	default y
+	help
+	  This turns on debugging support
+
+
+config DEBUG_SVM
+	bool "AMD SVM"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the AMD SVM-specific code
+
+config DEBUG_VMX
+	bool "Intel VT"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the Intel VT-specific code
+
+
+config DEBUG_SHADOW_PAGING
+	bool "Shadow paging"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the shadow paging system
+
+
+config DEBUG_NESTED_PAGING
+	bool "Nested paging"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the nested paging system
+
+
+config DEBUG_CTRL_REGS
+	bool "Control registers"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the control register handlers
+
+
+config DEBUG_INTERRUPTS
+	bool "Interrupts"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the interrupt system
+
+config DEBUG_TIME
+	bool "Timing"
+	default n
+	depends on DEBUG_ON
+	help
+	  This turns on debugging of system time virtualization
+
+config DEBUG_IO
+	bool "IO"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the IO handlers
+
+
+config DEBUG_EMULATOR
+	bool "Instruction Emulator"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the Instruction Emulator
+
+
+config DEBUG_DECODER
+	bool "Instruction Decoder"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the selected instruction decoder
+
+config DEBUG_HALT
+	bool "Halt"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the halt instruction handler
+
+config DEBUG_DEV_MGR
+	bool "Device Manager"
+	default n
+	depends on DEBUG_ON
+	help 
+	  This turns on debugging for the device manager
+
+config DEBUG_MEM_ERRORS
+    bool "Verbose memory errors"
+    default n
+    depends on DEBUG_ON
+    help
+      This turns on debugging for memory translations and lookups
+
+endmenu
+
+
+menu "BIOS Selection"
+
+config ROMBIOS_PATH
+	string "Path to pre-built ROMBIOS binary"
+	default "./bios/rombios/BIOS-bochs-latest"
+	help
+	  This is the rombios that will be used for the guests
+
+config VGABIOS_PATH
+	string "Path to pre-built VGABIOS binary"
+	default "./bios/vgabios/VGABIOS-lgpl-latest.bin"
+	help
+	  This is the vgabios that will be used for the guests
+
+config VMXASSIST_PATH
+	string "Path to pre-built VMXASSIST binary"
+	depends on VMX
+	default "./bios/vmxassist/vmxassist.bin"
+	help
+	  This is vmxassist image to boot real mode guests on 
+	  Intel VMX Platforms
+
+endmenu
+
+
+source "palacios/src/devices/Kconfig"
+

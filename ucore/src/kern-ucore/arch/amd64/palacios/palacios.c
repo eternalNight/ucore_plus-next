@@ -1,13 +1,5 @@
 #include "palacios.h"
 
-// #include "test_blob.h"
-// #include "test_blob2.h"
-// #include "test_blob_dos4.h"
-// #include "test_blob_msdos.h"
-// #include "test_blob_linux.h"
-// #include "test_blob_kitten.h"
-// #include "test_blob_freedos2.h"
-
 #include <types.h>
 #include <pmm.h>
 #include <sem.h>

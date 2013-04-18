@@ -169,10 +169,26 @@ static int pgfault_handler(struct trapframe *tf)
 	return do_pgfault(mm, tf->tf_err, rcr2());
 }
 
+typedef void (*Interrupt_Handler)(struct trapframe * tf);
+Interrupt_Handler g_InterruptTable[48];
+
+void install_IRQ(int irq, Interrupt_Handler handler) {
+	    if (irq < 0 || irq > 15) 
+			        return;
+		    g_InterruptTable[irq+32] = handler;
+}
+
 static void trap_dispatch(struct trapframe *tf)
 {
 	char c;
 	int ret;
+
+	if (tf->tf_trapno >= IRQ_OFFSET && tf->tf_trapno < IRQ_OFFSET+16) {
+		    if (g_InterruptTable[tf->tf_trapno]) {
+				        Interrupt_Handler func = g_InterruptTable[tf->tf_trapno];
+						        func(tf);
+								    }   
+	}   
 
 	switch (tf->tf_trapno) {
 	case T_PGFLT:

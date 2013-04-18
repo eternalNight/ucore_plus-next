@@ -91,13 +91,10 @@ struct snprintf_arg {
     ( defined(V3_CONFIG_BUILT_IN_SPRINTF) ||	      \
       defined(V3_CONFIG_BUILT_IN_SNPRINTF) ||	      \
       defined(V3_CONFIG_BUILT_IN_VSPRINTF) ||	      \
-	  defined(V3_CONFIG_BUILT_IN_VSNPRINTF) ||			\
       defined(V3_CONFIG_BUILT_IN_VSNRPRINTF ))
 
 static char * ksprintn(char * nbuf, uint64_t num, int base, int *len, int upper);
-#ifdef V3_CONFIG_BUILT_IN_VSNPRINTF
 static void snprintf_func(int ch, void * arg);
-#endif
 static int kvprintf(char const * fmt, void (*func)(int, void *), void * arg, int radix, va_list ap);
 
 
@@ -148,7 +145,7 @@ int snprintf(char * str, size_t size, const char * format, ...) {
 #endif
 
 
-#ifdef V3_CONFIG_BUILT_IN_VSNPRINTF
+
 /*
  * Scaled down version of vsnprintf(3).
  */
@@ -164,7 +161,7 @@ int vsnprintf(char * str, size_t size, const char * format, va_list ap) {
     }
     return (retval);
 }
-#endif
+
 
 
 #ifdef V3_CONFIG_BUILT_IN_VSNRPRINTF
@@ -186,7 +183,6 @@ int vsnrprintf(char * str, size_t size, int radix, const char * format, va_list 
 #endif
 
 
-#ifdef V3_CONFIG_BUILT_IN_VSNPRINTF
 static void snprintf_func(int ch, void *arg) {
 	struct snprintf_arg *const info = arg;
 
@@ -195,7 +191,6 @@ static void snprintf_func(int ch, void *arg) {
 		info->remain--;
 	}
 }
-#endif
 
 /*
  * Put a NUL-terminated ASCII number (base <= 36) in a buffer in reverse

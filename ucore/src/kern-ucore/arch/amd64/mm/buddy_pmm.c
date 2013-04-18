@@ -6,7 +6,7 @@
 
 // {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}
 // from 2^0 ~ 2^10
-#define MAX_ORDER 10
+#define MAX_ORDER 20
 static free_area_t free_area[MAX_ORDER + 1];
 
 //x from 0 ~ MAX_ORDER

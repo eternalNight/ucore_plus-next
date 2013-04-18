@@ -18,6 +18,7 @@ BOOTSECT   := $(OBJPATH_ROOT)/bootloader/bootsect
 LINK_FILE_IN	:= $(KTREE)/arch/${ARCH}/ucore.ld.in
 LINK_FILE     := $(KTREE_OBJ_ROOT)/arch/$(ARCH)/ucore.ld
 SEDFLAGS	= s/TEXT_START/$(UCONFIG_KERNEL_BASE)/
+PALACIOS_LIB := ../../../../../palacios/libv3vee.a
 
 $(KERNEL_IMG): $(BOOTSECT) $(KERNEL_ELF)
 	@echo Making $@
@@ -25,9 +26,9 @@ $(KERNEL_IMG): $(BOOTSECT) $(KERNEL_ELF)
 	$(Q)dd if=$(BOOTSECT) of=$@ conv=notrunc >/dev/null 2>&1
 	$(Q)dd if=$(KERNEL_ELF) of=$@ seek=1 conv=notrunc >/dev/null 2>&1
 
-$(KERNEL_ELF): $(LINK_FILE) $(KERNEL_BUILTIN) $(ENTRY32_OBJ) $(PIGGYCODE_OBJ) $(RAMDISK_OBJ)
+$(KERNEL_ELF): $(LINK_FILE) $(KERNEL_BUILTIN) $(ENTRY32_OBJ) $(PIGGYCODE_OBJ) $(RAMDISK_OBJ) $(PALACIOS_LIB)
 	@echo Linking uCore
-	$(Q)$(TARGET_LD) $(TARGET_LDFLAGS) -T $(LINK_FILE) $(KERNEL_BUILTIN) $(ENTRY32_OBJ) $(PIGGYCODE_OBJ) $(RAMDISK_OBJ) -o $@
+	$(Q)$(TARGET_LD) $(TARGET_LDFLAGS) -T $(LINK_FILE) $(KERNEL_BUILTIN) $(ENTRY32_OBJ) $(PIGGYCODE_OBJ) $(RAMDISK_OBJ) $(PALACIOS_LIB) -o $@
 
 $(LINK_FILE): $(LINK_FILE_IN) $(KCONFIG_AUTOCONFIG)
 	@echo "creating linker script"

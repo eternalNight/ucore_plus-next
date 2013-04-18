@@ -24,6 +24,7 @@
 #include <mp.h>
 #include <resource.h>
 #include <sysconf.h>
+#include <palacios.h>  // TODO: make this architecture dependent
 
 /* ------------- process/thread mechanism design&implementation -------------
 (an simplified Linux process/thread mechanism )
@@ -1973,7 +1974,7 @@ static int init_main(void *arg)
 
 	unsigned int nr_process_store = nr_process;
 
-	pid = ucore_kernel_thread(user_main, NULL, 0);
+	pid = ucore_kernel_thread(palacios_init, NULL, 0);
 	if (pid <= 0) {
 		panic("create user_main failed.\n");
 	}

@@ -53,12 +53,12 @@ int __ioapic_hwid_to_id[256];
 ioapic_s ioapic[MAX_IOAPIC];
 
 extern int acpi_ioapic_setup(void);
-int ioapic_init(void)
+int ioapic_init_amd64(void)
 {
 	acpi_ioapic_setup();
 
 	if(!sysconf.lioapic_count){
-		kprintf("ioapic_init: no IOAPICs found, use PIC\n");
+		kprintf("ioapic_init_amd64: no IOAPICs found, use PIC\n");
 		return -1;
 	}
 	/* maybe not needed

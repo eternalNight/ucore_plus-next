@@ -1,6 +1,6 @@
 #include "palacios.h"
 
-#include "test_blob.h"
+// #include "test_blob.h"
 // #include "test_blob2.h"
 // #include "test_blob_dos4.h"
 // #include "test_blob_msdos.h"
@@ -315,11 +315,13 @@ int palacios_init(void * a)
 	return 0;
 }
 
+extern char _binary_palacios_img_start;
+
 int RunVMM() 
 {
 	vkprintf("step1\n");
 	vkprintf("1. load img to memory\n");
-	char *vaddr = myblob;
+	char *vaddr = &_binary_palacios_img_start;
 	if(vaddr == NULL)
 	{
 		vkprintf("Array created failed\n");

@@ -38,7 +38,7 @@
 	<files>
 		<!-- The file 'id' is used as a reference for other configuration components -->
 		<file id="boot-cd" filename="image.iso" />
-		<!--<file id="harddisk" filename="firefox.img" />-->
+		<!--<file id="harddisk" filename="ucore_no_disk.img" />-->
 	</files>
 
 
@@ -113,6 +113,8 @@
 		<!-- This is a Storage Backend that connects to a frontend -->
 		<!-- The frontend section is passed to the frontend when the backend connects -->
 		<!-- The file tag refers to an 'id' already listed in the file list section above -->
+       
+       
 		<device class="RAMDISK" id="CD0">
 			<file>boot-cd</file>
 			<frontend tag="ide">
@@ -124,11 +126,13 @@
 		</device>
 
 
+
 <!---
 		<device class="SYM_SWAP" id="sym swap">
 			<frontend tag="blk_virtio" />
 			<size>150</size>
 		</device>
+
 
 		<device class="RAMDISK" id="HD0">
 			<file>harddisk</file>

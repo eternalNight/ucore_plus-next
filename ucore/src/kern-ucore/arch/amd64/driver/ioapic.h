@@ -14,7 +14,7 @@ typedef struct ioapic_s {
 extern ioapic_s ioapic[MAX_IOAPIC];
 extern __ioapic_hwid_to_id[256];
 
-int ioapic_init(void);
+int ioapic_init_amd64(void);
 void ioapic_send_eoi(int id, int irq);
 void ioapic_enable(int id, int irq, int cpunum);
 void ioapic_disable(int id, int irq);

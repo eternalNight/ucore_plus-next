@@ -74,7 +74,7 @@ int kern_init(void)
 	sync_init();		// init sync struct
 
 	/* ext int */
-	ioapic_init();
+	ioapic_init_amd64();
 	acpi_init();
 
 	ide_init();		// init ide devices

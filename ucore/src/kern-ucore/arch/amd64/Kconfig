@@ -7,6 +7,6 @@ source src/kern-ucore/fs/Kconfig
 menu "Profiler"
 config PROFILER_ON
 	bool "Enable profiler"
-	default n
+	default y
 
 endmenu

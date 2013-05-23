@@ -7,3 +7,7 @@ dirs-y := schedule syscall fs process mm libs sync kmodule sysconf
 dirs-y += arch/$(ARCH)
 
 dirs-$(UCONFIG_HAVE_LINUX_DDE_BASE) += module
+
+dirs-$(UCONFIG_TRACE) += trace
+
+

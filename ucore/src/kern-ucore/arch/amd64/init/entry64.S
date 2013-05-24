@@ -27,7 +27,7 @@ kern_ap_entry64:
 
 .global mcount
 mcount:
-    call *test_ftrace_0
+    call test_ftrace_0
     ret
 
 #endif

@@ -1,6 +1,10 @@
 #include <mmu.h>
 #include <memlayout.h>
 
+#ifdef UCONFIG_FTRACE
+#include <asm/ftrace.h>
+#endif /* UCONFIG_FTRACE */
+
 .text
 .code64
 .global kern_entry64
@@ -27,10 +31,14 @@ kern_ap_entry64:
 
 .global mcount
 mcount:
+    MCOUNT_SAVE_FRAME
+
     call test_ftrace_0
+
+    MCOUNT_RESTORE_FRAME
     ret
 
-#endif
+#endif /* UCONFIG_FTRACE */
 
 .data
 .align PGSIZE

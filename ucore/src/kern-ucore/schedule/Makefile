@@ -1,3 +1,4 @@
+TARGET_CFLAGS += -pg
 
 obj-y := sched.o
 

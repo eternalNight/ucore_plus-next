@@ -24,8 +24,10 @@ kern_ap_entry64:
 #ifdef UCONFIG_FTRACE
 
 # TODO: use ENTRY END as in include/linux/linkage.h
+
 .global mcount
 mcount:
+    call *test_ftrace_0
     ret
 
 #endif

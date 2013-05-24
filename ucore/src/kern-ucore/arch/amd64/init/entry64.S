@@ -21,6 +21,15 @@ kern_ap_entry64:
     call ap_init
     jmp spin
 
+#ifdef UCONFIG_FTRACE
+
+# TODO: use ENTRY END as in include/linux/linkage.h
+.global mcount
+mcount:
+    ret
+
+#endif
+
 .data
 .align PGSIZE
     .globl bootstack
@@ -28,4 +37,5 @@ bootstack:
     .space KSTACKSIZE
     .globl bootstacktop
 bootstacktop:
+
 

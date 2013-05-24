@@ -57,9 +57,6 @@ $(KERNEL_BUILTIN_O): subdir
 	$(Q)$(TARGET_LD) $(TARGET_LDFLAGS) -r -o $@ $(shell xargs < $(KERNEL_BUILTIN_LIST))
 
 $(KTREE_OBJ_ROOT):
-	echo "#############################"
-	echo $(TARGET_CFLAGS)
-	echo "#############################"
 	mkdir -p $@
 
 clean:

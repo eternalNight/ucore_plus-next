@@ -9,6 +9,10 @@ TARGET_CFLAGS += -fno-builtin -nostdlib  -nostdinc
 TARGET_CFLAGS += -D__KERNEL__ -D__KERN__ 
 TARGET_CFLAGS += $(shell echo $(UCONFIG_ADDITIONAL_CFLAGS))
 
+ifdef UCONFIG_FTRACE
+TARGET_CFLAGS += -pg
+endif
+
 TARGET_LDFLAGS += $(shell echo $(UCONFIG_ADDITIONAL_LDFLAGS))
 
 KTREE_OBJ_ROOT := $(OBJPATH_ROOT)/kernel

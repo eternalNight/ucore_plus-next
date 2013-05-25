@@ -1,5 +1,3 @@
-TARGET_CFLAGS += -pg
-
 obj-y := sched.o
 
 obj-$(UCONFIG_SCHEDULER_MLFQ) += sched_MLFQ.o sched_RR.o

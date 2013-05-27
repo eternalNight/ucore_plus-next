@@ -1,1 +1,3 @@
-obj-y := entry64.o init.o
+dirs-y := no_mcount
+
+obj-y := init.o

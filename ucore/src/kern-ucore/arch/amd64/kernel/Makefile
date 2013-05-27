@@ -1,4 +1,3 @@
-obj-y := 
+dirs-y := no_mcount
 
-obj-$(UCONFIG_FTRACE) += test_ftrace_0.o
-#TODO: change this
+

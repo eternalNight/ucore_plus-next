@@ -27,13 +27,13 @@ kern_ap_entry64:
 
 #ifdef UCONFIG_FTRACE
 
-# TODO: use ENTRY END as in include/linux/linkage.h
+# TODO_LTY: use ENTRY END as in include/linux/linkage.h
 
 .global mcount
 mcount:
     MCOUNT_SAVE_FRAME
 
-    call test_ftrace_0
+    call test_ftrace_0_enter
 
     MCOUNT_RESTORE_FRAME
     ret

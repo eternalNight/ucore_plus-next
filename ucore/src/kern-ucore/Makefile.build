@@ -37,9 +37,10 @@ TARGET_CFLAGS += $(ARCH_CFLAGS)
 
 TARGET_LDFLAGS += $(ARCH_LDFLAGS)
 
-ifdef UCONFIG_FTRACE
-TARGET_CFLAGS += -pg
-endif
+#TODO_LTY: only test single module first
+#ifdef UCONFIG_FTRACE
+#TARGET_CFLAGS += -pg
+#endif
 
 export TARGET_CFLAGS
 export TARGET_LDFLAGS

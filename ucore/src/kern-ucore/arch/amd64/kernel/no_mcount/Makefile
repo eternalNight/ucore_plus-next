@@ -4,5 +4,5 @@ TARGET_CFLAGS := $(filter-out -pg, $(TARGET_CFLAGS))
 endif
 
 obj-$(UCONFIG_FTRACE) := test_ftrace_0.o test_ftrace_1.o
-#TODO: change this
+#TODO_LTY: change this
 

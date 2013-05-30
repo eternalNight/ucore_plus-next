@@ -1,8 +1,8 @@
 #include <kio.h>
 
-void test_ftrace_0() {
+void test_ftrace_0_enter() {
 	static int i = 0;
-	kprintf("in mcount: %d\n", i);
+	kprintf("enter mcount: %d\n", i);
 	i++;
 }
 

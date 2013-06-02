@@ -36,7 +36,7 @@ mcount:
     call test_ftrace_0_enter
 
     MCOUNT_RESTORE_FRAME
-    ret
+    retq
 
 #endif /* UCONFIG_FTRACE */
 

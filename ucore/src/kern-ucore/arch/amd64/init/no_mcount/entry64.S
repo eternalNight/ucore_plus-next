@@ -29,7 +29,9 @@ kern_ap_entry64:
 
 #ifdef UCONFIG_FTRACE
 
-# TODO_LTY: use ENTRY END as in include/linux/linkage.h
+/*
+ * implement CONFIG_FUNCTION_GRAPH_TRACER in linux
+ */
 
 ENTRY(mcount)
     MCOUNT_SAVE_FRAME
@@ -40,9 +42,43 @@ ENTRY(mcount)
     retq
 END(mcount)
 
-.global return_to_handler
-return_to_handler:
+ENTRY(ftrace_graph_caller)
+    #TODO_LTY
+    /*
+    cmpl $0, function_trace_stop
+    jne ftrace_stub
+    */
 
+    MCOUNT_SAVE_FRAME
+
+    leaq 8(%rbp), %rdi
+    movq 0x38(%rsp), %rsi
+    movq (%rbp), %rdx
+    subq $MCOUNT_INSN_SIZE, %rsi
+
+    call    prepare_ftrace_return
+
+    MCOUNT_RESTORE_FRAME
+
+    retq
+END(ftrace_graph_caller)
+
+GLOBAL(return_to_handler)
+    #TODO_LTY
+    subq  $24, %rsp
+
+    /* Save the return values */
+    movq %rax, (%rsp)
+    movq %rdx, 8(%rsp)
+    movq %rbp, %rdi
+
+    call ftrace_return_to_handler
+
+    movq %rax, %rdi
+    movq 8(%rsp), %rdx
+    movq (%rsp), %rax
+    addq $24, %rsp
+    jmp *%rdi
 
 #endif /* UCONFIG_FTRACE */
 

@@ -1,5 +1,7 @@
 #include <mmu.h>
 #include <memlayout.h>
+#include <linux/linkage.h>
+#include <asm/linkage.h>
 
 #ifdef UCONFIG_FTRACE
 #include <asm/ftrace.h>
@@ -29,14 +31,18 @@ kern_ap_entry64:
 
 # TODO_LTY: use ENTRY END as in include/linux/linkage.h
 
-.global mcount
-mcount:
+ENTRY(mcount)
     MCOUNT_SAVE_FRAME
 
     call test_ftrace_0_enter
 
     MCOUNT_RESTORE_FRAME
     retq
+END(mcount)
+
+.global return_to_handler
+return_to_handler:
+
 
 #endif /* UCONFIG_FTRACE */
 

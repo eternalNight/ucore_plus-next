@@ -27,7 +27,7 @@ int ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 	 */
 	/*
 	 * smp_rmb();
-	 * TODO: smp_rmb probably needed with multi-core
+	 * TODO_LTY: smp_rmb probably needed with multi-core
 	 */
 
 	/* The return trace stack is full */

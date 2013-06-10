@@ -4,6 +4,7 @@ TARGET_CFLAGS := $(filter-out -pg, $(TARGET_CFLAGS))
 endif
 
 obj-y := 
+#TODO_LTY: tsc.o
 
 obj-$(UCONFIG_FTRACE) += ftrace.o
 

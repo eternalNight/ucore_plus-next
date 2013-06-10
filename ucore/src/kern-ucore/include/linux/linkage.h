@@ -5,9 +5,7 @@
  * taken from include/linux/linkage.h
  */
 
-/*
- * #ifdef __ASSEMBLY__ is not used here
- */
+#ifdef __ASSEMBLY__
 
 #ifndef __ALIGN
 #define __ALIGN		.align 4,0x90
@@ -31,6 +29,8 @@
 #endif
 
 #endif /* LINKER_SCRIPT */
+
+#endif /* __ASSEMBLY__  */
 
 #endif /* _LINUX_LINKAGE_H */
 

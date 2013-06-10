@@ -31,24 +31,15 @@ kern_ap_entry64:
 
 /*
  * implement CONFIG_FUNCTION_GRAPH_TRACER in linux
+ *
+ * taken from arch/x86/kernel/entry_64.S
  */
 
 ENTRY(mcount)
-    MCOUNT_SAVE_FRAME
-
-    call test_ftrace_0_enter
-
-    MCOUNT_RESTORE_FRAME
-    retq
+    jmp ftrace_graph_caller
 END(mcount)
 
 ENTRY(ftrace_graph_caller)
-    #TODO_LTY
-    /*
-    cmpl $0, function_trace_stop
-    jne ftrace_stub
-    */
-
     MCOUNT_SAVE_FRAME
 
     leaq 8(%rbp), %rdi
@@ -64,7 +55,6 @@ ENTRY(ftrace_graph_caller)
 END(ftrace_graph_caller)
 
 GLOBAL(return_to_handler)
-    #TODO_LTY
     subq  $24, %rsp
 
     /* Save the return values */

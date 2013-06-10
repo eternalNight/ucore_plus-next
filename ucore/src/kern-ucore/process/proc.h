@@ -18,7 +18,7 @@ enum proc_state {
 	PROC_UNINIT = 0,	// uninitialized
 	PROC_SLEEPING,		// sleeping
 	PROC_RUNNABLE,		// runnable(maybe running)
-	PROC_ZOMBIE,		// almost dead, and wait parent proc to reclaim his resource
+	PROC_ZOMBIE,	// almost dead, and wait parent proc to reclaim his resource
 };
 
 #define PROC_IS_IDLE(proc)   (((proc)->attribute & PROC_ATTR_ROLE) == PROC_ATTR_ROLE_IDLE)
@@ -45,7 +45,7 @@ struct proc_struct {
 	struct mm_struct *mm;	// Process's memory management field
 	struct context context;	// Switch here to run process
 	struct trapframe *tf;	// Trap frame for current interrupt
-	uintptr_t cr3;		// CR3 register: the base addr of Page Directroy Table(PDT)
+	uintptr_t cr3;	// CR3 register: the base addr of Page Directroy Table(PDT)
 	uint32_t flags;		// Process flag
 	char name[PROC_NAME_LEN + 1];	// Process name
 	list_entry_t list_link;	// Process link list 
@@ -53,7 +53,7 @@ struct proc_struct {
 	int exit_code;		// return value when exit
 	uint32_t wait_state;	// Process waiting state: the reason of sleeping
 	struct proc_struct *cptr, *yptr, *optr;	// Process's children, yonger sibling, Old sibling
-	list_entry_t thread_group;	// the threads list including this proc which share resource (mem/file/sem...)
+	list_entry_t thread_group;// the threads list including this proc which share resource (mem/file/sem...)
 
 	struct arch_proc_struct arch;	// Arch dependant info. See arch_proc.h
 
@@ -62,20 +62,36 @@ struct proc_struct {
 	int time_slice;		// time slice for occupying the CPU
 	sem_queue_t *sem_queue;	// the user semaphore queue which process waits
 	event_t event_box;	// the event which process waits   
-	struct fs_struct *fs_struct;	// the file related info(pwd, files_count, files_array, fs_semaphore) of process
+	struct fs_struct *fs_struct;// the file related info(pwd, files_count, files_array, fs_semaphore) of process
 
 	struct proc_signal signal_info;
 
 	void *tls_pointer;
+
+#ifdef UCONFIG_FTRACE
+	/* Index of current stored address in ret_stack */
+	int curr_ret_stack;
+	/* Stack of return addresses for return function tracing */
+	struct ftrace_ret_stack *ret_stack;
+	/* time stamp for last schedule */
+	unsigned long long ftrace_timestamp;
+	/*
+	 * Number of functions that haven't been traced
+	 * because of depth overrun.
+	 */
+	atomic_t trace_overrun;
+	/* Pause for the tracing */
+	atomic_t tracing_graph_pause;
+#endif /* UCONFIG_FTRACE */
+
 };
 
 struct linux_timespec {
-	long tv_sec;		/* seconds */
-	long tv_nsec;		/* nanoseconds */
+	long tv_sec; /* seconds */
+	long tv_nsec; /* nanoseconds */
 };
 
 #define PF_EXITING                  0x00000001	// getting shutdown
-
 //the wait state
 #define WT_CHILD                    (0x00000001 | WT_INTERRUPTED)	// wait child process
 #define WT_TIMER                    (0x00000002 | WT_INTERRUPTED)	// wait timer
@@ -91,7 +107,6 @@ struct linux_timespec {
 #define WT_SIGNAL					          (0x00000400 | WT_INTERRUPTED)	// wait the signal
 #define WT_KERNEL_SIGNAL            (0x00000800| WT_INTERRUPTED)
 #define WT_INTERRUPTED               0x80000000	// the wait state could be interrupted
-
 #define TIF_SIGPENDING				0x00010000
 
 #define le2proc(le, member)         \
@@ -107,7 +122,7 @@ void proc_init(void);
 void proc_init_ap(void);
 
 void proc_run(struct proc_struct *proc);
-int ucore_kernel_thread(int (*fn) (void *), void *arg, uint32_t clone_flags);
+int ucore_kernel_thread(int (*fn)(void *), void *arg, uint32_t clone_flags);
 
 char *set_proc_name(struct proc_struct *proc, const char *name);
 char *get_proc_name(struct proc_struct *proc);
@@ -143,16 +158,15 @@ void tls_switch(struct proc_struct *proc);
 void de_thread_arch_hook(struct proc_struct *proc);
 int copy_thread(uint32_t clone_flags, struct proc_struct *proc,
 		uintptr_t user_stack, struct trapframe *tf);
-int init_new_context(struct proc_struct *proc, struct elfhdr *elf,
-		     int argc, char **kargv, int envc, char **kenvp);
+int init_new_context(struct proc_struct *proc, struct elfhdr *elf, int argc,
+		char **kargv, int envc, char **kenvp);
 #ifdef UCONFIG_BIONIC_LIBC
 int init_new_context_dynamic(struct proc_struct *proc, struct elfhdr *elf,
-			     int argc, char **kargv, int envc, char **kenvp,
-			     uint32_t is_dynamic, uint32_t real_entry,
-			     uint32_t load_address, uint32_t linker_base);
+		int argc, char **kargv, int envc, char **kenvp,
+		uint32_t is_dynamic, uint32_t real_entry,
+		uint32_t load_address, uint32_t linker_base);
 #endif //UCONFIG_BIONIC_LIBC
-
-int kernel_thread(int (*fn) (void *), void *arg, uint32_t clone_flags);
+int kernel_thread(int (*fn)(void *), void *arg, uint32_t clone_flags);
 int kernel_execve(const char *name, const char **argv, const char **kenvp);
 int do_execve_arch_hook(int argc, char **kargv);
 

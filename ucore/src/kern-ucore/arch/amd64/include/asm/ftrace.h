@@ -7,9 +7,7 @@
  * arch/x86/include/asm/ftrace.h
  */
 
- /*
- * #ifdef __ASSEMBLY__ is not used here
- */
+#ifdef __ASSEMBLY__
 
 .macro MCOUNT_SAVE_FRAME
 /* taken from glibc */
@@ -33,6 +31,8 @@ movq 8(%rsp), %rcx
 movq (%rsp), %rax
 addq $0x38, %rsp
 .endm
+
+#endif /* __ASSEMBLY__  */
 
 #ifdef UCONFIG_FTRACE
 

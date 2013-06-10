@@ -1,0 +1,5 @@
+#ifndef _LINUX_TRACE_CLOCK_H
+#define _LINUX_TRACE_CLOCK_H
+
+#endif /* _LINUX_TRACE_CLOCK_H */
+

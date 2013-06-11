@@ -36,7 +36,7 @@ int ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 		return -EBUSY;
 	}
 
-	//calltime = trace_clock_local();
+	calltime = trace_clock_local();
 
 	index = ++current->curr_ret_stack;
 	barrier();

@@ -5,6 +5,6 @@ endif
 
 obj-y := trace_clock.o 
 
-obj-$(UCONFIG_FTRACE) += trace_functions_graph.o
+obj-$(UCONFIG_FTRACE) += trace_functions_graph.o ftrace.o
 
 

@@ -3,6 +3,7 @@
  */
 
 #include <linux/ftrace.h>
+#include <linux/err.h>
 
 #include <asm/ftrace.h>
 

@@ -7,8 +7,6 @@
 
 #include <proc.h>
 
-#include <linux/err.h>
-
 #ifdef UCONFIG_FTRACE
 
 #define FTRACE_RETFUNC_DEPTH 50
@@ -43,6 +41,9 @@ extern void return_to_handler(void);
 
 extern int ftrace_push_return_trace(unsigned long ret, unsigned long func,
 		int *depth, unsigned long frame_pointer);
+
+extern void ftrace_graph_init_task(struct proc_struct *t);
+extern void ftrace_graph_exit_task(struct proc_struct *t);
 
 #endif /* UCONFIG_FTRACE */
 

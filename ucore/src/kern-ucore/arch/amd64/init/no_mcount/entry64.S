@@ -2,10 +2,7 @@
 #include <memlayout.h>
 #include <linux/linkage.h>
 #include <asm/linkage.h>
-
-#ifdef UCONFIG_FTRACE
 #include <asm/ftrace.h>
-#endif /* UCONFIG_FTRACE */
 
 .text
 .code64

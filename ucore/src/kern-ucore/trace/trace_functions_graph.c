@@ -3,7 +3,7 @@
  */
 
 #include <linux/ftrace.h>
-#include <linux/err.h>
+#include <error.h>
 #include <arch.h>
 #include <asm/ftrace.h>
 
@@ -39,7 +39,7 @@ unsigned long ftrace_return_to_handler(unsigned long frame_pointer) {
 
 	ftrace_pop_return_trace(&trace, &ret, frame_pointer);
 	trace.rettime = trace_clock_local();
-	//ftrace_graph_return(&trace);
+	//ftrace_graph_return(&trace); TODO_LTY
 	barrier();
 	current->curr_ret_stack--;
 
@@ -54,7 +54,7 @@ int ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 	int index;
 
 	if (!current->ret_stack)
-		return -EBUSY;
+		return -E_BUSY;
 
 	/*
 	 * We must make sure the ret_stack is tested before we read
@@ -68,7 +68,7 @@ int ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 	/* The return trace stack is full */
 	if (current->curr_ret_stack == FTRACE_RETFUNC_DEPTH - 1) {
 		atomic_inc(&current->trace_overrun);
-		return -EBUSY;
+		return -E_BUSY;
 	}
 
 	calltime = trace_clock_local();

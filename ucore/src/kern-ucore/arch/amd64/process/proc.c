@@ -5,15 +5,15 @@
 #include <types.h>
 #include <stdlib.h>
 #include <mp.h>
+#include <linux/ftrace.h>
 
 void forkret(void);
 void forkrets(struct trapframe *tf);
 
 // alloc_proc - create a proc struct and init fields
-struct proc_struct *alloc_proc(void)
-{
+struct proc_struct *alloc_proc(void) {
 	struct proc_struct *proc = kmalloc(sizeof(struct proc_struct));
-	if (proc != NULL) {
+	if (proc != NULL ) {
 		proc->state = PROC_UNINIT;
 		proc->pid = -1;
 		proc->runs = 0;
@@ -35,16 +35,18 @@ struct proc_struct *alloc_proc(void)
 		proc->sem_queue = NULL;
 		event_box_init(&(proc->event_box));
 		proc->fs_struct = NULL;
+
+#ifdef UCONFIG_FTRACE
+		proc->ret_stack = NULL;
+#endif /* UCONFIG_FTRACE */
 	}
 	return proc;
 }
 
-int
-copy_thread(uint32_t clone_flags, struct proc_struct *proc, uintptr_t rsp,
-	    struct trapframe *tf)
-{
+int copy_thread(uint32_t clone_flags, struct proc_struct *proc, uintptr_t rsp,
+		struct trapframe *tf) {
 	uintptr_t kstacktop = proc->kstack + KSTACKSIZE;
-	proc->tf = (struct trapframe *)kstacktop - 1;
+	proc->tf = (struct trapframe *) kstacktop - 1;
 	*(proc->tf) = *tf;
 	proc->tf->tf_regs.reg_rax = 0;
 	proc->tf->tf_rsp = (rsp != 0) ? rsp : kstacktop;
@@ -59,8 +61,7 @@ copy_thread(uint32_t clone_flags, struct proc_struct *proc, uintptr_t rsp,
 // kernel_thread - create a kernel thread using "fn" function
 // NOTE: the contents of temp trapframe tf will be copied to 
 //       proc->tf in do_fork-->copy_thread function
-int kernel_thread(int (*fn) (void *), void *arg, uint32_t clone_flags)
-{
+int kernel_thread(int (*fn)(void *), void *arg, uint32_t clone_flags) {
 	struct trapframe tf;
 	memset(&tf, 0, sizeof(struct trapframe));
 	tf.tf_cs = KERNEL_CS;
@@ -74,33 +75,29 @@ int kernel_thread(int (*fn) (void *), void *arg, uint32_t clone_flags)
 // forkret -- the first kernel entry point of a new thread/process
 // NOTE: the addr of forkret is setted in copy_thread function
 //       after switch_to, the current proc will execute here.
-void forkret(void)
-{
+void forkret(void) {
 	if (!trap_in_kernel(current->tf)) {
 		kern_leave();
 	}
 	forkrets(current->tf);
 }
 
-int kernel_execve(const char *name, const char **argv, const char **kenvp)
-{
+int kernel_execve(const char *name, const char **argv, const char **kenvp) {
 	int ret;
 	asm volatile ("int %1;":"=a" (ret)
-		      :"i"(T_SYSCALL), "0"(SYS_exec), "D"(name), "S"(argv),
-		      "d"(kenvp)
-		      :"memory");
+			:"i"(T_SYSCALL), "0"(SYS_exec), "D"(name), "S"(argv),
+			"d"(kenvp)
+			:"memory");
 	return ret;
 }
 
-int
-init_new_context(struct proc_struct *proc, struct elfhdr *elf,
-		 int argc, char **kargv, int envc, char **kenvp)
-{
+int init_new_context(struct proc_struct *proc, struct elfhdr *elf, int argc,
+		char **kargv, int envc, char **kenvp) {
 	uintptr_t stacktop = USTACKTOP - argc * PGSIZE;
-	char **uargv = (char **)(stacktop - argc * sizeof(char *));
+	char **uargv = (char **) (stacktop - argc * sizeof(char *));
 	int i;
 	for (i = 0; i < argc; i++) {
-		uargv[i] = strcpy((char *)(stacktop + i * PGSIZE), kargv[i]);
+		uargv[i] = strcpy((char *) (stacktop + i * PGSIZE), kargv[i]);
 	}
 	stacktop = (uintptr_t) uargv;
 
@@ -120,24 +117,20 @@ init_new_context(struct proc_struct *proc, struct elfhdr *elf,
 }
 
 // cpu_idle - at the end of kern_init, the first kernel thread idleproc will do below works
-void cpu_idle(void)
-{
+void cpu_idle(void) {
 	while (1) {
 		assert((read_rflags() & FL_IF) != 0);
 		asm volatile ("hlt");
 	}
 }
 
-int do_execve_arch_hook(int argc, char **kargv)
-{
+int do_execve_arch_hook(int argc, char **kargv) {
 	return 0;
 }
 
-int ucore_kernel_thread(int (*fn) (void *), void *arg, uint32_t clone_flags)
-{
+int ucore_kernel_thread(int (*fn)(void *), void *arg, uint32_t clone_flags) {
 	kernel_thread(fn, arg, clone_flags);
 }
 
-void de_thread_arch_hook(struct proc_struct *proc)
-{
+void de_thread_arch_hook(struct proc_struct *proc) {
 }

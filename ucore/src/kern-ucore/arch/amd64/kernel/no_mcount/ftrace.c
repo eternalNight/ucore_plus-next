@@ -3,6 +3,7 @@
  */
 
 #include <linux/ftrace.h>
+#include <error.h>
 
 void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 		unsigned long frame_pointer) {
@@ -25,9 +26,21 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 
 	struct ftrace_graph_ent trace;
 
+	if (ftrace_push_return_trace(old, self_addr, &trace.depth,
+			frame_pointer) == -E_BUSY) {*
+		parent = old;
+		return;
+	}
+
 	trace.func = self_addr;
 
-	*parent = old; //TODO_LTY remove
+	/* Only trace if the calling function expects to */
+	/*
+	 if (!ftrace_graph_entry(&trace)) {
+	 current->curr_ret_stack--;
+	 *parent = old;
+	 }
+	 */
 
 }
 

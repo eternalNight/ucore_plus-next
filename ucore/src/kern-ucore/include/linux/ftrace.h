@@ -61,10 +61,7 @@ extern int ftrace_push_return_trace(unsigned long ret, unsigned long func,
 
 extern void ftrace_graph_init_task(struct proc_struct *t);
 extern void ftrace_graph_exit_task(struct proc_struct *t);
-
-/* The current handlers in use */
-extern trace_func_graph_ret_t ftrace_graph_return;
-extern trace_func_graph_ent_t ftrace_graph_entry;
+//extern void ftrace_graph_init_idle_task(struct proc_struct *t, int cpu); // TODO_LTY: needed for idle proc?
 
 #endif /* UCONFIG_FTRACE */
 

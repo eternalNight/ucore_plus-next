@@ -4,11 +4,45 @@
 
 #include <linux/ftrace.h>
 #include <linux/err.h>
-
+#include <arch.h>
 #include <asm/ftrace.h>
 
+/* Retrieve a function return address to the trace stack on thread info.*/
+static void ftrace_pop_return_trace(struct ftrace_graph_ret *trace,
+		unsigned long *ret, unsigned long frame_pointer) {
+	int index;
+
+	index = current->curr_ret_stack;
+
+	/*
+	 * removed panic code - lty
+	 */
+
+	/*
+	 * CONFIG_HAVE_FUNCTION_GRAPH_FP_TEST removed - lty
+	 */
+
+	*ret = current->ret_stack[index].ret;
+	trace->func = current->ret_stack[index].func;
+	trace->calltime = current->ret_stack[index].calltime;
+	trace->overrun = atomic_read(&current->trace_overrun);
+	trace->depth = index;
+}
+
 unsigned long ftrace_return_to_handler(unsigned long frame_pointer) {
+	struct ftrace_graph_ret trace;
 	unsigned long ret;
+
+	/*
+	 * removed panic code - lty
+	 */
+
+	ftrace_pop_return_trace(&trace, &ret, frame_pointer);
+	trace.rettime = trace_clock_local();
+	//ftrace_graph_return(&trace);
+	barrier();
+	current->curr_ret_stack--;
+
 	return ret;
 }
 
@@ -50,3 +84,4 @@ int ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 
 	return 0;
 }
+

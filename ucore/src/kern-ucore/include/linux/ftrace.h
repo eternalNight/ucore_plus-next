@@ -9,8 +9,6 @@
 
 #ifdef UCONFIG_FTRACE
 
-#define FTRACE_RETFUNC_DEPTH 50
-
 /*
  * Structure that defines an entry function trace.
  */
@@ -33,6 +31,25 @@ struct ftrace_ret_stack {
 };
 
 /*
+ * Structure that defines a return function trace.
+ */
+struct ftrace_graph_ret {
+	unsigned long func; /* Current function */
+	unsigned long long calltime;
+	unsigned long long rettime;
+	/* Number of functions that overran the depth limit for current task */
+	unsigned long overrun;
+	int depth;
+};
+
+#define FTRACE_RETFUNC_DEPTH 50
+#define FTRACE_RETSTACK_ALLOC_SIZE 32
+/* Type of the callback handlers for tracing function graph*/
+typedef void (*trace_func_graph_ret_t)(struct ftrace_graph_ret *); /* return     */
+typedef int (*trace_func_graph_ent_t)(struct ftrace_graph_ent *); /* entry *    /
+
+
+ /*
  * Primary handler of a function return.
  * It relays on ftrace_return_to_handler.
  * Defined in entry_32/64.S
@@ -44,6 +61,10 @@ extern int ftrace_push_return_trace(unsigned long ret, unsigned long func,
 
 extern void ftrace_graph_init_task(struct proc_struct *t);
 extern void ftrace_graph_exit_task(struct proc_struct *t);
+
+/* The current handlers in use */
+extern trace_func_graph_ret_t ftrace_graph_return;
+extern trace_func_graph_ent_t ftrace_graph_entry;
 
 #endif /* UCONFIG_FTRACE */
 

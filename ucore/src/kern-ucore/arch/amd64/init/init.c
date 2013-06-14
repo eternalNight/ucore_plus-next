@@ -36,12 +36,12 @@ static void bootaps(void) {
 
 int kern_init(void) {
 
+	extern char edata[], end[];
+	memset(edata, 0, end - edata);
+
 #ifdef UCONFIG_FTRACE
 	function_trace_stop = 1;
 #endif /* UCONFIG_FTRACE */
-
-	extern char edata[], end[];
-	memset(edata, 0, end - edata);
 
 	/* percpu variable for CPU0 is preallocated */
 	percpu_offsets[0] = __percpu_start;

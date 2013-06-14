@@ -622,7 +622,9 @@ static int __do_exit(void) {
 	put_signal(current);
 	put_fs(current);
 	put_sem_queue(current);
+#ifdef UCONFIG_FTRACE
 	ftrace_graph_exit_task(current);
+#endif /* UCONFIG_FTRACE */
 	current->state = PROC_ZOMBIE;
 
 	bool intr_flag;

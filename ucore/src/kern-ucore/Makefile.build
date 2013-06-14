@@ -39,9 +39,9 @@ TARGET_CFLAGS += $(ARCH_CFLAGS)
 TARGET_LDFLAGS += $(ARCH_LDFLAGS)
 
 #TODO_LTY: only test single module first
-#ifdef UCONFIG_FTRACE
-#TARGET_CFLAGS += -pg
-#endif
+ifdef UCONFIG_FTRACE
+TARGET_CFLAGS += -pg
+endif
 
 TARGET_CFLAGS += -mcmodel=large 
 

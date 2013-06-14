@@ -44,6 +44,7 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 	 *parent = old;
 	 }
 	 */
+	test_ftrace_enter_0();
 
 }
 

@@ -7,6 +7,9 @@
 #include <arch.h>
 #include <asm/ftrace.h>
 
+// TODO_LTY: remove
+#include <test_ftrace.h>
+
 /* Retrieve a function return address to the trace stack on thread info.*/
 static void ftrace_pop_return_trace(struct ftrace_graph_ret *trace,
 		unsigned long *ret, unsigned long frame_pointer) {

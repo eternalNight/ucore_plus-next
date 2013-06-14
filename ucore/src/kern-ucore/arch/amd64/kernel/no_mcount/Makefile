@@ -8,6 +8,6 @@ obj-y :=
 
 obj-$(UCONFIG_FTRACE) += ftrace.o
 
-obj-$(UCONFIG_FTRACE) += test_ftrace_0.o test_ftrace_1.o
+obj-$(UCONFIG_FTRACE) += test_ftrace.o 
 #TODO_LTY: change this
 

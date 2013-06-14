@@ -24,6 +24,7 @@
 #include <mp.h>
 #include <resource.h>
 #include <sysconf.h>
+#include <linux/ftrace.h>
 
 /* ------------- process/thread mechanism design&implementation -------------
  (an simplified Linux process/thread mechanism )
@@ -523,6 +524,13 @@ int do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
 		goto fork_out;
 	}
 
+#ifdef UCONFIG_FTRACE
+	ftrace_graph_init_task(proc);
+	if (!proc->ret_stack) {
+		goto bad_fork_cleanup_ret_stack;
+	}
+#endif /* UCONFIG_FTRACE */
+
 	proc->parent = current;
 	list_init(&(proc->thread_group));
 	assert(current->wait_state == 0);
@@ -581,6 +589,9 @@ int do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
 	bad_fork_cleanup_sem: put_sem_queue(proc);
 	bad_fork_cleanup_kstack: put_kstack(proc);
 	bad_fork_cleanup_proc: kfree(proc);
+#ifdef UCONFIG_FTRACE
+	bad_fork_cleanup_ret_stack: ftrace_graph_exit_task(proc);
+#endif
 	goto fork_out;
 }
 
@@ -617,6 +628,7 @@ static int __do_exit(void) {
 	put_signal(current);
 	put_fs(current);
 	put_sem_queue(current);
+	ftrace_graph_exit_task(current);
 	current->state = PROC_ZOMBIE;
 
 	bool intr_flag;

@@ -5,6 +5,9 @@
 #include <linux/ftrace.h>
 #include <error.h>
 
+// TODO_LTY: remove
+#include <test_ftrace.h>
+
 void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 		unsigned long frame_pointer) {
 

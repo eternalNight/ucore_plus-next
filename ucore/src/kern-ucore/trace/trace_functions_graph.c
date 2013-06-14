@@ -43,7 +43,7 @@ unsigned long ftrace_return_to_handler(unsigned long frame_pointer) {
 	ftrace_pop_return_trace(&trace, &ret, frame_pointer);
 	trace.rettime = trace_clock_local();
 	//ftrace_graph_return(&trace); TODO_LTY
-	test_ftrace_exit_0
+	test_ftrace_exit_0;
 	barrier();
 	current->curr_ret_stack--;
 

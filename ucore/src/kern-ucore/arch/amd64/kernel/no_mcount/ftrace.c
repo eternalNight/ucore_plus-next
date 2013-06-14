@@ -43,6 +43,7 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
 	 current->curr_ret_stack--;
 	 *parent = old;
 	 }
+	 //TODO_LTY
 	 */
 	test_ftrace_enter_0();
 

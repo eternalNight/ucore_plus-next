@@ -56,6 +56,10 @@ int kern_init(void) {
 	/* get_cpu_var not available before tls_init() */
 	tls_init(per_cpu_ptr(cpus, 0) );
 
+#ifdef UCONFIG_FTRACE
+	function_trace_stop = 0;
+#endif /* UCONFIG_FTRACE */
+
 	pmm_init();		// init physical memory management
 
 	hz_init();

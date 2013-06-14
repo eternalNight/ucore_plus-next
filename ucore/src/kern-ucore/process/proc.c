@@ -526,9 +526,6 @@ int do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
 
 #ifdef UCONFIG_FTRACE
 	ftrace_graph_init_task(proc);
-	if (!proc->ret_stack) {
-		goto bad_fork_cleanup_ret_stack;
-	}
 #endif /* UCONFIG_FTRACE */
 
 	proc->parent = current;
@@ -589,9 +586,6 @@ int do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
 	bad_fork_cleanup_sem: put_sem_queue(proc);
 	bad_fork_cleanup_kstack: put_kstack(proc);
 	bad_fork_cleanup_proc: kfree(proc);
-#ifdef UCONFIG_FTRACE
-	bad_fork_cleanup_ret_stack: ftrace_graph_exit_task(proc);
-#endif
 	goto fork_out;
 }
 

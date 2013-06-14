@@ -30,15 +30,14 @@ void ftrace_graph_init_task(struct proc_struct *t) {
 	t->ret_stack = NULL;
 	t->curr_ret_stack = -1;
 
-	if (ftrace_graph_active) {
-		struct ftrace_ret_stack *ret_stack;
+	//if (ftrace_graph_active) {
+	struct ftrace_ret_stack *ret_stack;
 
-		ret_stack = kmalloc(
-				FTRACE_RETFUNC_DEPTH * sizeof(struct ftrace_ret_stack));
-		if (!ret_stack)
-			return;
-		graph_init_task(t, ret_stack);
-	}
+	ret_stack = kmalloc(FTRACE_RETFUNC_DEPTH * sizeof(struct ftrace_ret_stack));
+	if (!ret_stack)
+		return;
+	graph_init_task(t, ret_stack);
+	//}
 }
 
 void ftrace_graph_exit_task(struct proc_struct *t) {

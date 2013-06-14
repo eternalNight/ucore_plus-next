@@ -43,6 +43,8 @@ TARGET_LDFLAGS += $(ARCH_LDFLAGS)
 #TARGET_CFLAGS += -pg
 #endif
 
+TARGET_CFLAGS += -mcmodel=large 
+
 export TARGET_CFLAGS
 export TARGET_LDFLAGS
 

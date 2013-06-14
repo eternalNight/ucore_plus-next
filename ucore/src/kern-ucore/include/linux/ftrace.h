@@ -42,6 +42,8 @@ struct ftrace_graph_ret {
 	int depth;
 };
 
+extern int function_trace_stop;
+
 #define FTRACE_RETFUNC_DEPTH 50
 #define FTRACE_RETSTACK_ALLOC_SIZE 32
 /* Type of the callback handlers for tracing function graph*/
@@ -55,6 +57,8 @@ typedef int (*trace_func_graph_ent_t)(struct ftrace_graph_ent *); /* entry *    
  * Defined in entry_32/64.S
  */
 extern void return_to_handler(void);
+
+extern void ftrace_stub(unsigned long a0, unsigned long a1);
 
 extern int ftrace_push_return_trace(unsigned long ret, unsigned long func,
 		int *depth, unsigned long frame_pointer);

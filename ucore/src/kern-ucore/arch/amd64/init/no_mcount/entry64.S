@@ -29,11 +29,29 @@ kern_ap_entry64:
 /*
  * implement CONFIG_FUNCTION_GRAPH_TRACER in linux
  *
+ * no CONFIG_DYNAMIC_FTRACE
+ *
  * taken from arch/x86/kernel/entry_64.S
  */
 
 ENTRY(mcount)
+    /*
+     * error:
+     * entry64.S: relocation truncated to fit: R_X86_64_32S against symbol
+     * `function_trace_stop' defined in COMMON section in
+     * ucore_plus-next/ucore/obj/kernel/kernel-builtin.o
+     *
+    cmpl $0, function_trace_stop
+    jne  ftrace_stub
+      */
+    callq return_function_trace_stop
+    cmpl $0, %eax
+    jne ftrace_stub
+
     jmp ftrace_graph_caller
+
+GLOBAL(ftrace_stub)
+    retq
 END(mcount)
 
 ENTRY(ftrace_graph_caller)

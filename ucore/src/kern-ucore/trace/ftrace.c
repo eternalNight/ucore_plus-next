@@ -8,6 +8,9 @@
 
 static int ftrace_graph_active;
 
+/* Quick disabling of function tracer. */
+int function_trace_stop;
+
 static void graph_init_task(struct proc_struct *t,
 		struct ftrace_ret_stack *ret_stack) {
 	atomic_set(&t->tracing_graph_pause, 0);
@@ -46,5 +49,20 @@ void ftrace_graph_exit_task(struct proc_struct *t) {
 	barrier();
 
 	kfree(ret_stack);
+}
+
+/*
+ * not sure why this error occurs
+ *
+ * entry64.S: relocation truncated to fit: R_X86_64_32S against symbol
+ * `function_trace_stop' defined in COMMON section in
+ * ucore_plus-next/ucore/obj/kernel/kernel-builtin.o
+ *
+ * so I use this function to get this value
+ *
+ * -lty
+ */
+int return_function_trace_stop() {
+	return function_trace_stop;
 }
 

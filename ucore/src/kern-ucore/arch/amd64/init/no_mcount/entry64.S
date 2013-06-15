@@ -44,7 +44,7 @@ ENTRY(mcount)
     cmpl $0, function_trace_stop
     jne  ftrace_stub
       */
-    callq return_function_trace_stop
+    movabs function_trace_stop, %eax
     cmpl $0, %eax
     jne ftrace_stub
 

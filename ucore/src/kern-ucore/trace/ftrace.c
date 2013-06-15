@@ -50,18 +50,3 @@ void ftrace_graph_exit_task(struct proc_struct *t) {
 	kfree(ret_stack);
 }
 
-/*
- * not sure why this error occurs
- *
- * entry64.S: relocation truncated to fit: R_X86_64_32S against symbol
- * `function_trace_stop' defined in COMMON section in
- * ucore_plus-next/ucore/obj/kernel/kernel-builtin.o
- *
- * so I use this function to get this value
- *
- * -lty
- */
-int return_function_trace_stop() {
-	return function_trace_stop;
-}
-
